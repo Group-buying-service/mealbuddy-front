@@ -5,6 +5,8 @@ import { Routes, Route } from 'react-router-dom';
 import Login from '../components/main/Login'
 import PostDetail from "./main/PostDetail";
 import PostList from "./main/PostList";
+import PostWrite from "./main/PostWrite";
+import Chat from "./main/Chat";
 
 // import SideBar from "./SideBar";
 // import Home from "./main/Home";
@@ -22,9 +24,11 @@ const Main = () => {
   return (
     <>
     <Routes>
-      <Route path="/login" element={<Login />}></Route>
-      <Route path="/post/:post_id" element={<PostDetail />}></Route>
+      <Route path="/login/" element={<Login />}></Route>
+      <Route path="/post/:post_id/" element={<PostDetail />}></Route>
+      <Route path="/post/write/" element={<PostWrite />}></Route>
       <Route path="/post/" element={<PostList />}></Route>
+      <Route path='/chat/:chat_id/' element={<Chat />}></Route>
       {/* <Route path="/" element={<Home />}></Route>
       <Route path="/chat/write" element={<ChatWrite />}></Route>
       <Route path="/chat/list" element={<ChatList />}></Route>

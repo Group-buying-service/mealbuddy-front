@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useParams } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { APIcall } from "../../utils/api";
 
 const PostDetail = () => {
@@ -9,12 +10,19 @@ const PostDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       let response = {};
-      response = await APIcall('get', `/blog/detail/${post_id}`);
-      // setPost(response.data.post)
-      setMode('RENDER')
+      response = await APIcall('get', `/blog/detail/${post_id}/`);
+      if (response.status === 'good'){
+        setPost(response.data)
+        setMode('RENDER')
+      }
+      else {
+        setMode('LOADING')
+      }
     }
     fetchData()
-  },[post_id])
+  }, [post_id])
+
+
 
   return (
     <article className="post-page">
@@ -23,10 +31,10 @@ const PostDetail = () => {
           <>
             <h2>{post.title}</h2>
             <p>{post.category}</p>
-            <p>{post.writer}</p>
+            <p>{post.writer.username}</p>
             <p>{post.created_at}</p>
             <p>{post.join_number}/{post.target_number}</p>
-            <p>{post.is_compelete}</p>
+            <p>{post.is_compelete ? 'O' : 'X'}</p>
           </>
         ) : (
           <div>

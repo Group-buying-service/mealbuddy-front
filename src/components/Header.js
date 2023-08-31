@@ -31,7 +31,7 @@ function Header() {
     }
 
     return (
-      <header class="header">    
+      <header className="header">    
         { isLoggedIn ? (
           <>
             <h1><Link to="/post/">밀버디</Link></h1>

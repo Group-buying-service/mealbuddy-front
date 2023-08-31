@@ -5,7 +5,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 // Context Provider
 import AuthProvider from './components/context/auth/AuthProvider';
-import AuthContext from './components/context/auth/AuthContext';
 
 // Component
 import Header from './components/Header'

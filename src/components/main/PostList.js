@@ -1,19 +1,29 @@
-import React, { useState, useEffect, useParams } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { APIcall } from "../../utils/api";
+import AuthContext from "../context/auth/AuthContext";
 
 const PostList = () => {
   const [ postList, setPostList ] = useState([]);
-  const [ mode, setMode ] = useState('');
+  const { isLoggedIn } = useContext(AuthContext)
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await APIcall('get', `/blog/`);
-      // setPostList(response.data)
-      setMode('RENDER')
+      setPostList(response.data)
     }
     fetchData()
-  }, [postList])
+  }, [])
+
+  const dateFormat = (date) => {
+    const dateObject = new Date(date)
+    const formmatedDate = dateObject.getFullYear() +
+    '-' + ((dateObject.getMonth() + 1) < 10 ? "0" : "") + (dateObject.getMonth() + 1) +
+    '-' + (dateObject.getDate() < 10 ? "0" : "") + dateObject.getDate() +
+    ' ' + (dateObject.getHours() < 10 ? "0" : "") + dateObject.getHours() +
+    ':' + (dateObject.getMinutes() < 10 ? "0" : "") + dateObject.getMinutes();
+    return formmatedDate
+  }
 
   return (
     <article className="post-list">
@@ -47,35 +57,38 @@ const PostList = () => {
         </div>
         {postList ? (
           <table class="table list">
-          <thead>
-            <tr>
-              <td>번호</td>
-              <td>제목</td>
-              <td>카테고리</td>
-              <td>작성자</td>                                        
-              <td>작성일</td>
-              <td>완료여부</td>                    
-            </tr>
-          </thead>
-          <tbody>
-            {postList.map((post) => (
-              <tr className="post-wrap" key={post.id}>
-                <td>{post.id}</td>
-                <td><Link to={`/post/${post.id}/`}></Link></td>
-                <td>{post.category}</td>
-                <td>{post.writer}</td>
-                <td>{post.created_at}</td>
-                <td>{post.is_complete}</td>
+            <thead>
+              <tr>
+                <td>번호</td>
+                <td>제목</td>
+                <td>카테고리</td>
+                <td>작성자</td>                                        
+                <td>작성일</td>
+                <td>완료여부</td>                    
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {postList.map((post) => (
+                <tr className="post-wrap" key={post.id}>
+                  <td>{post.id}</td>
+                  <td><Link to={`/post/${post.id}/`}>{post.title}</Link></td>
+                  <td>{post.category}</td>
+                  <td>{post.writer.username}</td>
+                  <td>{dateFormat(post.created_at)}</td>
+                  <td>{post.is_complete ? 'O' : 'X'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
           ) : (
             <p>작성된 게시물이 없습니다.</p>
           )}
-          
-        
       </div>
+      {isLoggedIn && (
+        <>
+          <Link to='/post/write/'>글 작성하기</Link>
+        </>
+      )}
     </article>
   )
 }
