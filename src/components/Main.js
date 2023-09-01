@@ -7,6 +7,8 @@ import PostDetail from "./main/PostDetail";
 import PostList from "./main/PostList";
 import PostWrite from "./main/PostWrite";
 import Chat from "./main/Chat";
+import IndexPage from "./main/IndexPage";
+import Register from "./main/Register";
 
 // import SideBar from "./SideBar";
 // import Home from "./main/Home";
@@ -24,7 +26,9 @@ const Main = () => {
   return (
     <>
     <Routes>
+      <Route path="/" element={<IndexPage />}></Route>
       <Route path="/login/" element={<Login />}></Route>
+      <Route path="/register/" element={<Register />}></Route>
       <Route path="/post/:post_id/" element={<PostDetail />}></Route>
       <Route path="/post/write/" element={<PostWrite />}></Route>
       <Route path="/post/" element={<PostList />}></Route>

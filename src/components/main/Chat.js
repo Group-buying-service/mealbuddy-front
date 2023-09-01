@@ -3,12 +3,54 @@ import { useNavigate, useParams } from "react-router-dom";
 import { APIcall } from "../../utils/api";
 import AuthContext from "../context/auth/AuthContext";
 
-const ChatUser = ({ listedUser }) => {
+const ChatUser = ({ chat_id, listedUser, owner, setUserList, getUserList }) => {
 
   const { user } = useContext(AuthContext);
 
+  const actUserListProps = async () => {
+    const userList = await getUserList();
+      if (userList.status === 'good'){
+        setUserList(userList.data)
+      }
+      else {
+
+      }
+    }
+
+  const banUser = async (e) => {
+    e.preventDefault()
+    const data = new FormData(e.target)
+    const response = await APIcall('post', `/chat/API/${chat_id}/user/ban/`, data)
+    if (response.status==='good'){
+      await actUserListProps()
+    }
+    else {
+
+    }
+  }
+
+  const exitChat = async(e) => {
+    const response = await APIcall('delete', `/chat/API/${chat_id}/user/`)
+    if (response.status==='good'){
+      await actUserListProps()
+    }
+    else {
+
+    }
+  }
+
   return (
-    <li>{listedUser.username}</li>
+    <li>
+      {listedUser.username}
+      {user.id === owner.id && listedUser.id !== user.id ?
+        (<form method="post" onSubmit={banUser}>
+          <input type="hidden" value={listedUser.id} name="target_user_id"/>
+          <button type="submit">강퇴</button>
+        </form>)
+        :
+        (user.id !== owner.id && listedUser.id === user.id && (<button type="button" onClick={exitChat}>나가기</button>))
+      }
+    </li>
   )
 }
 
@@ -18,7 +60,7 @@ const Chat = () => {
   const [ chatData, setChatData ] = useState('');
   const [ userList, setUserList ] = useState('');
   const [ chatSocket, setChatSocket ] = useState('');
-  const { user, isLoggedIn } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   const chatWindowRef = useRef(null);
   const navigate = useNavigate();
@@ -30,7 +72,6 @@ const Chat = () => {
   }
 
   const connectWS = async () => {
-    // console.log('connected WS')
     const token = localStorage.getItem('token');
     const chatSocket = new WebSocket(
       'ws://'
@@ -53,19 +94,29 @@ const Chat = () => {
           return updatedChatData;
         }); 
       }
-      // else if (data.type === 'chat.user.join') {
-      //   chatLog.value += (data.message.message + '\n')
-      //   renderUserList()
-      // }
-      // else if (data.type === 'chat.user.leave') {
-      //   chatLog.value += (data.message.message + '\n')
-      //   if (user.user_username === data.user) {
-      //     alert("강퇴당했습니다.")
-      //     navigate('/post/');
-      //   }
-      //   renderUserList()
-      // }
-      // chatLog.scrollTop = chatLog.scrollHeight;
+      else if (data.type === 'chat.user.join') {
+        setChatData(prevChatData => {
+          const updatedChatData = {
+            ...prevChatData,
+            messages: [...prevChatData.messages, data.message]
+          };
+          return updatedChatData;
+        }); 
+      }
+      else if (data.type === 'chat.user.leave') {
+        if (data.user_id === user.id){
+          navigate(`/post/`)
+        }
+        else {
+          setChatData(prevChatData => {
+            const updatedChatData = {
+              ...prevChatData,
+              messages: [...prevChatData.messages, data.message]
+            };
+            return updatedChatData;
+          }); 
+        }
+      }
     };
   
     chatSocket.onclose = (e) => {
@@ -107,7 +158,7 @@ const Chat = () => {
   }
 
   const getUserList = async () => {
-    const response = await APIcall('get', `/chat/API/${chat_id}/user/`);
+    const response = await APIcall('get', `/chat/API/${chat_id}/user/list/`);
     return response
   }
 
@@ -117,16 +168,16 @@ const Chat = () => {
       const userList = await getUserList();
       if (chatData.status === 'good'){
         setChatData(chatData.data)
-        console.log(chatData)
         connectWS();
       }
       else {
+        navigate('/post/')
       }
       if (userList.status === 'good'){
         setUserList(userList.data)
       }
       else {
-
+        navigate('/post/')
       }
     }
     fetchData()
@@ -142,15 +193,17 @@ const Chat = () => {
 
   return (
     <article className="chat-page">
+      <div className='title-wrap'>
+        <h2>{chatData.title} - {chatData.join_number}/{chatData.target_number}</h2>
+      </div>
       <ul className="user-list">
         {userList && 
           userList.map((item, index) => {
             // console.log(item)
-            return <ChatUser key={index} listedUser={item.user} owner={chatData}/>
+            return <ChatUser key={index} chat_id={chat_id} listedUser={item.user} owner={chatData.writer} getUserList={getUserList} setUserList={setUserList}/>
           })}
       </ul>
-      <h2>{chatData.title} - {chatData.join_number}/{chatData.target_number}</h2>
-      {(user && chatData) && (user.email === chatData.writer.email && <button>삭제</button>)}
+      
       <div className="chat-window" ref={chatWindowRef} style={chatWindowStyle}>
         {chatData && 
           (chatData.messages.map((message, index) => {

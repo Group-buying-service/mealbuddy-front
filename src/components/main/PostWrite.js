@@ -27,6 +27,9 @@ const PostWrite = () => {
 
   return (
     <article className="write-page">
+      <div className="title-wrap">
+        <h2>글 작성하기</h2>
+      </div>
       <form method="post" className="write-form" onSubmit={submitWrite}>
         <div className="form-wrap">
           <label htmlFor="id_title">제목</label>

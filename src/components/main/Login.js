@@ -6,13 +6,14 @@ import { APILogin } from '../../utils/api';
 const Login = () => {
 
   const { login, isLoggedIn } = useContext(AuthContext);
-  const [ errors, setErrors ] = useState([]);
-  const navigate = useNavigate
+  const [ errors, setErrors ] = useState(false);
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (isLoggedIn) {
-      // navigate('/');
+      navigate('/post/');
     }
+    // setErrors(false);
   }, [isLoggedIn, navigate])
 
   const submitLogin = (e) => {
@@ -23,11 +24,12 @@ const Login = () => {
       const response = await APILogin(formData)
       if (response.status === 'good') {
         login(response.data);
-        // navigate('/');
-        setErrors([])
+        setErrors(false)
+        navigate('/post/');
       }
       else {
-        setErrors(response.data.errors)
+        // console.log(response.data.errors)
+        setErrors(true)
       }
     }
     fetchData()
@@ -41,12 +43,7 @@ const Login = () => {
       <form method='post' className='auth-form' onSubmit={ submitLogin }>
         {errors && (
           <>
-              {errors.map((item, index) => {
-                return (
-                  <div className='error' key={index}>{item}</div>
-                  )
-                })
-              }
+            <div className='error'>아이디나 패스워드가 올바르지 않습니다.</div>
           </>
         )}
         <div className='auth-wrap'>

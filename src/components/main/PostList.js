@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { APIcall } from "../../utils/api";
 import AuthContext from "../context/auth/AuthContext";
 
+import { dateFormat } from "../../utils/util";
+
 const PostList = () => {
   const [ postList, setPostList ] = useState([]);
   const { isLoggedIn } = useContext(AuthContext)
@@ -10,32 +12,39 @@ const PostList = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await APIcall('get', `/blog/`);
-      setPostList(response.data)
+      if (response.status === 'good'){
+        setPostList(response.data)
+      }
+      else {
+
+      }
+      
     }
     fetchData()
   }, [])
 
-  const dateFormat = (date) => {
-    const dateObject = new Date(date)
-    const formmatedDate = dateObject.getFullYear() +
-    '-' + ((dateObject.getMonth() + 1) < 10 ? "0" : "") + (dateObject.getMonth() + 1) +
-    '-' + (dateObject.getDate() < 10 ? "0" : "") + dateObject.getDate() +
-    ' ' + (dateObject.getHours() < 10 ? "0" : "") + dateObject.getHours() +
-    ':' + (dateObject.getMinutes() < 10 ? "0" : "") + dateObject.getMinutes();
-    return formmatedDate
+  const categorySearch = async (e) => {
+    e.preventDefault();
+    const response = await APIcall('get', `/blog/?category=${e.target.category.value}`)
+    if (response.status === 'good'){
+        setPostList(response.data)
+    }
+    else {
+      
+    }
   }
 
   return (
     <article className="post-list">
+      <div className="title-wrap">
+        <h2 className="main-title">게시판</h2>
+      </div>
       <div className="post-list-wrap">
-          <h2 className="main-title">게시판</h2>
-          <div className="board-top">
-          <p className="main-desc">    </p>  
-          <div>
-          <form action="" method="get">
-          <label htmlFor="category">카테고리 선택:</label>
-          <select id="category" name="category">
-              <option value="">전채</option>
+        <div className="board-top"> 
+          <form action="" method="get" onSubmit={categorySearch}>
+            <label htmlFor="category">카테고리 선택:</label>
+            <select id="category" name="category">
+              <option value="">전체</option>
               <option value="족발,보쌈">족발 보쌈</option>
               <option value="찜,탕,찌개">찜 탕 찌개</option>
               <option value="돈까스,회,일식">돈까스 회 일식</option>
@@ -49,14 +58,13 @@ const PostList = () => {
               <option value="도시락">도시락</option>
               <option value="분식">분식</option>
               <option value="카페,디저트">카페 디저트</option>
-              <option value="페스트푸드">페스트푸드</option>
+              <option value="페스트푸드">패스트푸드</option>
             </select>
             <button type="submit">필터 적용</button>
           </form>
-          </div>
         </div>
-        {postList ? (
-          <table class="table list">
+        {postList.length > 0 ? (
+          <table className="table list">
             <thead>
               <tr>
                 <td>번호</td>
@@ -82,7 +90,8 @@ const PostList = () => {
           </table>
           ) : (
             <p>작성된 게시물이 없습니다.</p>
-          )}
+          )
+        }
       </div>
       {isLoggedIn && (
         <>
