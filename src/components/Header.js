@@ -4,34 +4,21 @@ import '../assets/css/common.css';
 import AuthContext from "./context/auth/AuthContext";
 import { APILogin, APIcall } from "../utils/api";
 
-const Weather = () => {
-  const [ coords, setCoords ] = useState({});
+const Weather = ({user}) => {
   const [ weatherData, setWeatherData ] = useState('');
   
   useEffect(() => {
-
+    setWeatherData('')
     const fetchWeatherData = async (lat, lon) => {
       const response = await APIcall('get', `/openAPI/weather/?lat=${lat}&lon=${lon}`);
       if (response.status === 'good') {
         setWeatherData(response.data);
       }
     }
-    const getCoords = () => {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          setCoords({ lat, lon });
-          fetchWeatherData(lat, lon); // 좌표 정보를 받아온 후에 fetchData 호출
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-    };
-
-    getCoords();
-  }, [])
+    if (user){
+      fetchWeatherData(user.lat, user.lon);
+    }
+  }, [user])
   
   return (
     <ul>
@@ -73,12 +60,12 @@ const Header = () => {
     return (
       <header className="header">    
         <h1><Link to="/post/">밀버디</Link></h1>
-        <Weather />
+        <Weather user={user}/>
         { isLoggedIn ? (
           <>
-            
+            <div className="location">지역 : {user.address}</div>
             <div className="header-click">
-              <p>환영합니다 {user.username}  님.</p>
+              <Link to='/user/update/'>환영합니다 {user.username}  님.</Link>
               <button type="button" onClick={submitLogout}>로그아웃</button>
             </div>
           </>

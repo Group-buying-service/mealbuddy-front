@@ -3,39 +3,27 @@ import { useNavigate, useParams } from "react-router-dom";
 import { APIcall } from "../../utils/api";
 import AuthContext from "../context/auth/AuthContext";
 
-const ChatUser = ({ chat_id, listedUser, owner, setUserList, getUserList }) => {
-
-  const { user } = useContext(AuthContext);
-
-  const actUserListProps = async () => {
-    const userList = await getUserList();
-      if (userList.status === 'good'){
-        setUserList(userList.data)
-      }
-      else {
-
-      }
-    }
+const ChatUser = ({ chat_id, listedUser, owner, user }) => {
 
   const banUser = async (e) => {
     e.preventDefault()
     const data = new FormData(e.target)
-    const response = await APIcall('post', `/chat/API/${chat_id}/user/ban/`, data)
-    if (response.status==='good'){
-      await actUserListProps()
+    const response = await APIcall('post', `/chat/${chat_id}/user/ban/`, data)
+    if (response.status !=='good'){
+      alert(response.errors)
     }
     else {
-
+      console.log('good')
     }
   }
 
   const exitChat = async(e) => {
-    const response = await APIcall('delete', `/chat/API/${chat_id}/user/`)
-    if (response.status==='good'){
-      await actUserListProps()
+    const response = await APIcall('delete', `/chat/${chat_id}/user/`)
+    if (response.status !=='good'){
+      alert(response.errors)
     }
     else {
-
+      console.log('good')
     }
   }
 
@@ -83,8 +71,10 @@ const Chat = () => {
       );
     setChatSocket(chatSocket)
 
-    chatSocket.onmessage = function(e) {
+    chatSocket.onmessage = async function(e) {
       const data = JSON.parse(e.data);
+      // console.log(data)
+      // console.log(user)
       if (data.type === "chat.message") {
         setChatData(prevChatData => {
           const updatedChatData = {
@@ -92,7 +82,8 @@ const Chat = () => {
             messages: [...prevChatData.messages, data.message]
           };
           return updatedChatData;
-        }); 
+          }
+        ); 
       }
       else if (data.type === 'chat.user.join') {
         setChatData(prevChatData => {
@@ -101,7 +92,9 @@ const Chat = () => {
             messages: [...prevChatData.messages, data.message]
           };
           return updatedChatData;
-        }); 
+          }
+        );
+        renderUserList()
       }
       else if (data.type === 'chat.user.leave') {
         if (data.user_id === user.id){
@@ -114,10 +107,12 @@ const Chat = () => {
               messages: [...prevChatData.messages, data.message]
             };
             return updatedChatData;
-          }); 
+            }
+          );
+          renderUserList()
         }
       }
-    };
+    }
   
     chatSocket.onclose = (e) => {
       //console.log(e)
@@ -153,19 +148,12 @@ const Chat = () => {
   }
 
   const getChatData = async () => {
-    const response = await APIcall('get', `/chat/API/${chat_id}/`);
+    const response = await APIcall('get', `/chat/${chat_id}/`);
     return response
   }
 
-  const getUserList = async () => {
-    const response = await APIcall('get', `/chat/API/${chat_id}/user/list/`);
-    return response
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const chatData = await getChatData();
-      const userList = await getUserList();
+  const renderChatData = async () => {
+    const chatData = await getChatData();
       if (chatData.status === 'good'){
         setChatData(chatData.data)
         connectWS();
@@ -173,15 +161,32 @@ const Chat = () => {
       else {
         navigate('/post/')
       }
+  }
+
+  const getUserList = async () => {
+    const response = await APIcall('get', `/chat/${chat_id}/user/`);
+    return response
+  }
+
+  const renderUserList = async () => {
+    const userList = await getUserList();
       if (userList.status === 'good'){
         setUserList(userList.data)
       }
       else {
-        navigate('/post/')
+
       }
     }
-    fetchData()
-  }, [chat_id])
+
+  useEffect(() => {
+    if (user) {
+      const fetchData = async () => {
+        await renderChatData()
+        renderUserList()  
+      }
+      fetchData()
+    }
+  }, [chat_id, user])
 
 
   useEffect(scrollToBottom, [chatData])
@@ -200,7 +205,7 @@ const Chat = () => {
         {userList && 
           userList.map((item, index) => {
             // console.log(item)
-            return <ChatUser key={index} chat_id={chat_id} listedUser={item.user} owner={chatData.writer} getUserList={getUserList} setUserList={setUserList}/>
+            return <ChatUser key={index} chat_id={chat_id} listedUser={item.user} owner={chatData.writer} getUserList={getUserList} setUserList={setUserList} user={user}/>
           })}
       </ul>
       

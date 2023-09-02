@@ -12,6 +12,8 @@ import Main from './components/Main';
 
 // asset
 import './assets/css/reset.css'
+import Footer from './components/Footer';
+import FoodChoicer from './components/FoodChoicer';
 
 function App() {
 
@@ -23,6 +25,8 @@ function App() {
           <main className='main'>
             <Main/>
           </main>
+          <FoodChoicer/>
+          <Footer/>
         </div>
       </Router>
     </AuthProvider>

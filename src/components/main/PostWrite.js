@@ -8,7 +8,7 @@ const PostWrite = () => {
 
   // useEffect(() => {
   //   const fetchData = async () => {
-  //     const response = await APIcall('get', '/blog/write/')
+  //     const response = await APIcall('get', '/post/write/')
   //     if (response.status === 'good') {
   //       console.log(response)
   //     }
@@ -19,7 +19,7 @@ const PostWrite = () => {
   const submitWrite = async (e) => {
     e.preventDefault()
     const data = new FormData(e.target)
-    const response = await APIcall("post", '/blog/write/', data)
+    const response = await APIcall("post", '/post/write/', data)
     if (response.status === 'good'){
       navigate('/post/')
     }

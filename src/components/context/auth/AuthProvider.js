@@ -1,5 +1,6 @@
 import React, { useReducer } from 'react';
 import AuthContext from './AuthContext';
+import { kakaoAPIcall } from '../../../utils/api';
 
 // 초기 상태 정의
 const initialState = {
@@ -36,7 +37,19 @@ const authReducer = (state, action) => {
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const login = (user) => {
+  const getCoords = async (address) => {
+    const response = await kakaoAPIcall('get', `/search/address.json?query=${encodeURIComponent(address)}`)
+    let lat = '';
+    let lon = '';
+    if (response.status === 'good') {
+      lon = parseFloat(response.data.address.x);
+      lat = parseFloat(response.data.address.y);
+    }
+    return [lat, lon]
+  }
+
+  const login = async (user) => {
+    [user.lat, user.lon] = await getCoords(user.address);
     dispatch({ type: 'LOGIN', payload: { user } });
   };
 

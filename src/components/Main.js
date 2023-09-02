@@ -9,6 +9,10 @@ import PostWrite from "./main/PostWrite";
 import Chat from "./main/Chat";
 import IndexPage from "./main/IndexPage";
 import Register from "./main/Register";
+import Error from "./main/Error";
+import ProfileUpdate from "./main/ProfileUpdate";
+import UserDelete from "./main/UserDelete";
+import PasswordChange from "./main/PasswordChange";
 
 // import SideBar from "./SideBar";
 // import Home from "./main/Home";
@@ -33,15 +37,11 @@ const Main = () => {
       <Route path="/post/write/" element={<PostWrite />}></Route>
       <Route path="/post/" element={<PostList />}></Route>
       <Route path='/chat/:chat_id/' element={<Chat />}></Route>
-      {/* <Route path="/" element={<Home />}></Route>
-      <Route path="/chat/write" element={<ChatWrite />}></Route>
-      <Route path="/chat/list" element={<ChatList />}></Route>
-      <Route path="/signup" element={<SignUp />}></Route>
-      <Route path="/profile/:user_id" element={<Profile />}></Route>
-      <Route path="/user/delete" element={<UserDelete />}></Route>
-      <Route path="/user/password/change" element={<PasswordChange />}></Route>
+      <Route path="/user/update/" element={<ProfileUpdate />}></Route>
+      <Route path="/user/delete/" element={<UserDelete />}></Route>
+      <Route path="/user/passwordchange/" element={<PasswordChange />}></Route>
       <Route path="/error/" element={<Error />}></Route>
-      <Route path="*" element={<Error />}></Route> */}
+      <Route path="*" element={<Error />}></Route> 
     </Routes>
     </>
   )

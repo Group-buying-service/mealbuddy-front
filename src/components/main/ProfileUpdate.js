@@ -1,13 +1,14 @@
 import React, { useContext, useState, useEffect } from 'react';
 import AuthContext from '../context/auth/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { APIRegister, kakaoAPIcall } from '../../utils/api';
+import { Link, useNavigate } from 'react-router-dom';
+import { APIcall, kakaoAPIcall } from '../../utils/api';
 
-const Register = () => {
+const ProfileUpdate = () => {
 
-  const { login, isLoggedIn } = useContext(AuthContext);
+  const { user, login, isLoggedIn } = useContext(AuthContext);
   const [ errors, setErrors ] = useState([]);
   const [ address, setAddress ] = useState('');
+  const [ username, setUsername ] = useState('');
   const navigate = useNavigate()
 
   const handleDaumPostcode =  () => {
@@ -49,50 +50,41 @@ const Register = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/post/');
+      setAddress(user.Address);
+      setUsername(user.username);
     }
     
-    // setErrors(false);
-  }, [isLoggedIn, navigate])
+  }, [isLoggedIn])
 
   const submitRegister = (e) => {
     e.preventDefault()
 
     const fetchData = async () => {
       const formData = new FormData(e.target)
-      const response = await APIRegister(formData)
+      const response = await APIcall('post', formData)
       if (response.status === 'good') {
         login(response.data);
         setErrors([])
         navigate('/post/');
       }
       else {
-        console.log(response.data.errors)
         setErrors(response.data.errors)
       }
     }
     fetchData()
   }
 
+  const handelUsernameChange = (e) => {
+    setUsername(e.target.value)
+  }
+
   return (
     <article className='login-page'>
       <div className='title-wrap'>
-        <h2>회원가입</h2>
+        <h2>회원정보 수정</h2>
       </div>
       <form method='post' className='auth-form' onSubmit={ submitRegister }>
         <div className='auth-wrap'>
-            <p>
-              {errors.email&&(
-                  <>
-                  {errors.email.map((item, index)=> {
-                    return <div className='error' key={index}>{item}</div>
-                  })}
-                  </>
-                )
-              }
-              <label htmlFor='id_email'>이메일</label>
-              <input type='text' name='email' id='id_email' required/>
-            </p>
             <p>
               {errors.username&&(
                   <>
@@ -103,23 +95,7 @@ const Register = () => {
                 )
               }
               <label htmlFor='id_username'>유저명</label>
-              <input type='text' name='username' id='id_username' required/>
-            </p>
-            <p>
-              {errors.password&&(
-                  <>
-                  {errors.password.map((item, index)=> {
-                    return <div className='error' key={index}>{item}</div>
-                  })}
-                  </>
-                )
-              }
-              <label htmlFor='id_password'>비밀번호</label>
-              <input type='password' name='password' id='id_password' required/>
-            </p>
-            <p>
-              <label htmlFor='id_password2'>비밀번호 확인</label>
-              <input type='password' name='password2' id='id_password2' required/>
+              <input type='text' name='username' id='id_username' value={username} onChange={handelUsernameChange} required/>
             </p>
             <p>
               <label htmlFor='id_address'>주소</label>
@@ -127,11 +103,13 @@ const Register = () => {
               <button type='button' onClick={handleDaumPostcode}>주소찾기</button>
               <button type='button' onClick={getCurrentAddress}>현재 위치로 하기</button>
             </p>
-            <input className='button gray' type='submit' value="회원가입"/>
+            <input className='button gray' type='submit' value="정보수정"/>
+            <Link to='/user/passwordchange/'>비밀번호 변경</Link>
+            <Link to='/user/delete/'>회원탈퇴</Link>
           </div>
       </form>
     </article>
   )
 }
 
-export default Register
+export default ProfileUpdate

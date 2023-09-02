@@ -1,37 +1,50 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { APIcall } from "../../utils/api";
 import AuthContext from "../context/auth/AuthContext";
 
 import { dateFormat } from "../../utils/util";
 
 const PostList = () => {
-  const [ postList, setPostList ] = useState([]);
+  const [ postList, setPostList ] = useState('');
+  const [ paginator, setPaginator ] = useState('');
+  const [ category, setCategory ] = useState('');
+  const [ page, setPage ] = useState('1')
   const { isLoggedIn } = useContext(AuthContext)
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await APIcall('get', `/blog/`);
+      const response = await APIcall('get', `/post/`);
       if (response.status === 'good'){
-        setPostList(response.data)
+        setPostList(response.data.posts)
+        setPaginator(response.data.paginator)
+        setPage(response.data.paginator.current_page)
       }
       else {
-
+        navigate('error')
       }
-      
     }
     fetchData()
   }, [])
 
   const categorySearch = async (e) => {
     e.preventDefault();
-    const response = await APIcall('get', `/blog/?category=${e.target.category.value}`)
+    setCategory(e.target.category.value);
+    const response = await APIcall('get', `/post/?category=${e.target.category.value}`);
     if (response.status === 'good'){
-        setPostList(response.data)
+        setPostList(response.data);
     }
     else {
-      
+      navigate('error')
     }
+  }
+
+  const changePage = async (e) => {
+    e.preventDefault();
+    const target_page = e.target.innerText;
+    console.log(target_page)
+    // const response = await APIcall('get', `/post/?category=${e.target.category.value}`);
   }
 
   return (
@@ -92,6 +105,21 @@ const PostList = () => {
             <p>작성된 게시물이 없습니다.</p>
           )
         }
+        {paginator && (
+          <ul className='page-list'>
+          {paginator.prev_button && <li><a href={`/chat/list/?page=${paginator.prev_button}`} className='page button gray pn-button'>PREV</a></li>}
+          {paginator.page_range.map((item, index) => (
+            <li key={index}>
+            {item === paginator.current_page? (
+              <p className='page button gray current-page'>{item}</p>
+            ) : (
+              <a key={index} href={`/post/`} className='page button gray' onClick={changePage}>{item}</a>
+            )}
+            </li>
+          ))}
+          {paginator.next_button && <li><a href={`/chat/list/?page=${paginator.next_button}`} className='page button gray pn-button'>NEXT</a></li>}
+        </ul>
+        )}
       </div>
       {isLoggedIn && (
         <>
