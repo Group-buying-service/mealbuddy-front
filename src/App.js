@@ -8,7 +8,7 @@ import './assets/css/foodchoicer.css';
 import './assets/css/auth-form.css';
 
 // React
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 // Context Provider
