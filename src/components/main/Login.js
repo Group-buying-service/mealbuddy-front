@@ -43,20 +43,20 @@ const Login = () => {
       <form method='post' className='auth-form' onSubmit={ submitLogin }>
         {errors && (
           <>
-            <div className='error'>아이디나 패스워드가 올바르지 않습니다.</div>
+            <div className='error'>이메일이나 패스워드가 올바르지 않습니다.</div>
           </>
         )}
-        <div className='auth-wrap'>
-            <p>
-              <label htmlFor='id_email'>이메일</label>
-              <input type='text' name='email' id='id_email' required/>
-            </p>
-            <p>
-              <label htmlFor='id_password'>비밀번호</label>
-              <input type='password' name='password' id='id_password' required/>
-            </p>
-            <input className='button gray' type='submit' value="로그인"/>
-          </div>
+        <div className='form-wrap'>
+          <label htmlFor='id_email'>이메일</label>
+          <input type='text' name='email' id='id_email' required/>
+        </div>
+        <div className='form-wrap'>
+          <label htmlFor='id_password'>비밀번호</label>
+          <input type='password' name='password' id='id_password' required/>
+        </div>
+        <div className='form-wrap'>
+          <button type='submit' className='button'>로그인</button>
+        </div>
       </form>
     </article>
   )

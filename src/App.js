@@ -1,4 +1,12 @@
-import logo from './logo.svg';
+// asset
+import './assets/css/reset.css';
+import './assets/css/common.css';
+import './assets/css/global.css';
+import './assets/css/button.css';
+import './assets/css/main.css';
+import './assets/css/foodchoicer.css';
+import './assets/css/auth-form.css';
+
 // React
 import React, { useContext, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -9,9 +17,6 @@ import AuthProvider from './components/context/auth/AuthProvider';
 // Component
 import Header from './components/Header'
 import Main from './components/Main';
-
-// asset
-import './assets/css/reset.css'
 import Footer from './components/Footer';
 import FoodChoicer from './components/FoodChoicer';
 
@@ -21,12 +26,12 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="App">
-          <Header/>
+          <Header />
           <main className='main'>
-            <Main/>
+            <Main />
           </main>
-          <FoodChoicer/>
-          <Footer/>
+          <FoodChoicer />
+          <Footer />
         </div>
       </Router>
     </AuthProvider>

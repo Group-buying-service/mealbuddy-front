@@ -1,0 +1,15 @@
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 4rem;
+    background-color: var(--main-color);
+}
+
+footer .github {
+    display: block;
+    background: transparent url('../icons/icon-github.svg') no-repeat 0 50% / 1.5rem;
+    padding-left: 2rem;
+    height: 2rem;
+    padding-top: 1rem;
+}

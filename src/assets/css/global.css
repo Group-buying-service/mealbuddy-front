@@ -1,0 +1,31 @@
+:root {
+	--main-color: #03A64A;
+	--outline-border: #05F26C;
+	--light-color: #05F26C;
+    --point-color: #60BF89;
+    --dark-color: #01260E;
+    --red-color: rgb(243, 124, 75);
+	--black-color: #0D0D0D;
+	--white-color: #EEEEEE;
+	--gray-color: #45494f;
+	--border-color: #ddd;
+	--gray-background-light: #f9f9f9;
+	--gray-background: #4b4b4b;
+	--gray-text: #6f6f6f;
+	--border-radius: 0.4em;
+}
+
+.App {
+    color: var(--black-color)
+}
+
+input, textarea {
+    background-color: var(--white-color);
+    color: var(--black-color);
+    border: none;
+    padding: 0.5rem;
+}
+
+textarea {
+    resize: none;
+}

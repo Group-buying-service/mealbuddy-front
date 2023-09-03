@@ -1,0 +1,100 @@
+a, a:visited, a:link {
+    text-decoration: none;
+    color: inherit;
+}
+
+button,
+input[type="submit"],
+input[type="button"] {
+    cursor: pointer;
+}
+
+input, button {
+    box-shadow: none;
+    border: none;
+    padding: 0.25rem 0.5rem;
+}
+
+.button {
+    border-radius: 5px;
+    padding: 0.4rem;
+    background-color: var(--main-color);
+    color: var(--white-color);
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: none;
+    border: none;
+}
+
+.button.gray {
+    background-color: var(--gray-color);
+}
+
+.button.black {
+    background-color: var(--black-color);
+}
+
+.button.white {
+    background-color: var(--white-color);
+}
+
+.delete-button {
+    width: 1.3rem;
+    height: 1.3rem;
+    background: var(--main-color) url('../icons/icon-delete-white.svg') no-repeat 50% 50% / 1.2rem;
+    transition: all 0.5s;
+}
+
+.delete-button:hover {
+    background-image: url('../icons/icon-delete.svg');
+    background-color: transparent;
+}
+
+.modify-button {
+    width: 1.3rem;
+    height: 1.3rem;
+    background: var(--main-color) url('../icons/icon-modify-white.svg') no-repeat 50% 50% / 1.2rem;
+    transition: all 0.5s;
+}
+
+.modify-button:hover {
+    background-image: url('../icons/icon-modify.svg');
+    background-color: transparent;
+}
+
+.reply-button {
+    width: 1.3rem;
+    height: 1.3rem;
+    background: transparent url('../icons/icon-reply.svg') no-repeat 50% 40% / 1.2rem;
+}
+
+.send-button {
+    width: 2rem;
+    height: 2rem;
+    background: var(--main-color) url('../icons/icon-send.svg') no-repeat 50% 50% / 1.5rem;
+}
+
+.search-button {
+    width: 2rem;
+    height: 2rem;
+    background: transparent url('../icons/icon-search.svg') no-repeat 50% 50% / 1.5rem;
+}
+
+.reset-button {
+    width: 2rem;
+    height: 2rem;
+    background: transparent url('../icons/icon-reset.svg') no-repeat 50% 50% / 1.5rem;
+}
+
+.exit-button {
+    width: 1.5rem;
+    height: 1.5rem;
+    background: transparent url('../icons/icon-exit.svg') no-repeat 50% 50% / 1.3rem;
+    
+}
+
+.ban-button {
+    width: 1.5rem;
+    height: 1.5rem;
+    background: transparent url('../icons/icon-ban.svg') no-repeat 50% 50% / 1.3rem;
+}

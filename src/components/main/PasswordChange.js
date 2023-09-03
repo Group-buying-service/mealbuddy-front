@@ -41,26 +41,26 @@ const PasswordChange = () => {
               )
             })
           }
-          <div className='auth-wrap'>
-            <p>
-              <label htmlFor='id_current_password'>현재 비밀번호</label>
-              <input type='password' name='current_password' id='id_current_password' required/>
-            </p>
-            <p>
-              {errors.new_password1 && errors.new_password1.map((item, index) => {
-                return (
-                  <div className='error' key={index}>{item}</div>
-                  )
-                })
-              }
-              <label htmlFor='id_new_password1'>새 비밀번호</label>
-              <input type='password' name='new_password1' id='id_new_password1' required/>
-            </p>
-            <p>
-              <label htmlFor='id_new_password2'>새 비밀번호 확인</label>
-              <input type='password' name='new_password2' id='id_new_password2' required/>
-            </p>
-            <input className='button gray' type='submit' value="변경하기"/>
+          <div className='form-wrap'>
+            <label htmlFor='id_current_password'>현재 비밀번호</label>
+            <input type='password' name='current_password' id='id_current_password' required/>
+          </div>
+          {errors.new_password1 && errors.new_password1.map((item, index) => {
+            return (
+              <div className='error' key={index}>{item}</div>
+              )
+            })
+          }
+          <div className='form-wrap'>
+            <label htmlFor='id_new_password1'>새 비밀번호</label>
+            <input type='password' name='new_password1' id='id_new_password1' required/>
+          </div>
+          <div className='form-wrap'>
+            <label htmlFor='id_new_password2'>새 비밀번호 확인</label>
+            <input type='password' name='new_password2' id='id_new_password2' required/>
+          </div>
+          <div className='form-wrap'>
+            <input className='button' type='submit' value="변경하기"/>
           </div>
         </form>
       </article>

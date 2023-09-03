@@ -1,0 +1,12 @@
+.profile-update-page .title-wrap {
+    display: flex;
+    gap: 1rem;
+}
+
+.profile-update-page .title-wrap h2 {
+    flex-grow: 1;
+}
+
+.profile-update-page .title-wrap .button {
+    color: white;
+}

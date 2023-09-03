@@ -3,6 +3,8 @@ import AuthContext from '../context/auth/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { APIcall, kakaoAPIcall } from '../../utils/api';
 
+import '../../assets/css/profile-update.css'
+
 const ProfileUpdate = () => {
 
   const { user, login, isLoggedIn } = useContext(AuthContext);
@@ -50,18 +52,18 @@ const ProfileUpdate = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      setAddress(user.Address);
+      setAddress(user.address);
       setUsername(user.username);
     }
     
-  }, [isLoggedIn])
+  }, [isLoggedIn, user])
 
   const submitRegister = (e) => {
     e.preventDefault()
 
     const fetchData = async () => {
       const formData = new FormData(e.target)
-      const response = await APIcall('post', formData)
+      const response = await APIcall('post', '/user/update/', formData)
       if (response.status === 'good') {
         login(response.data);
         setErrors([])
@@ -79,34 +81,34 @@ const ProfileUpdate = () => {
   }
 
   return (
-    <article className='login-page'>
+    <article className='profile-update-page'>
       <div className='title-wrap'>
         <h2>회원정보 수정</h2>
+        <Link to='/user/delete/' className='button'>회원탈퇴</Link>
+        <Link to='/user/passwordchange/' className='button'>비밀번호 변경</Link>
       </div>
       <form method='post' className='auth-form' onSubmit={ submitRegister }>
-        <div className='auth-wrap'>
-            <p>
-              {errors.username&&(
-                  <>
-                  {errors.username.map((item, index)=> {
-                    return <div className='error' key={index}>{item}</div>
-                  })}
-                  </>
-                )
-              }
-              <label htmlFor='id_username'>유저명</label>
-              <input type='text' name='username' id='id_username' value={username} onChange={handelUsernameChange} required/>
-            </p>
-            <p>
-              <label htmlFor='id_address'>주소</label>
-              <input type='text' name='address' id='id_address' value={address} required readOnly placeholder='동까지만 입력됩니다.'/>
-              <button type='button' onClick={handleDaumPostcode}>주소찾기</button>
-              <button type='button' onClick={getCurrentAddress}>현재 위치로 하기</button>
-            </p>
-            <input className='button gray' type='submit' value="정보수정"/>
-            <Link to='/user/passwordchange/'>비밀번호 변경</Link>
-            <Link to='/user/delete/'>회원탈퇴</Link>
-          </div>
+        <p className='form-wrap'>
+          {errors.username&&(
+              <>
+              {errors.username.map((item, index)=> {
+                return <div className='error' key={index}>{item}</div>
+              })}
+              </>
+            )
+          }
+          <label htmlFor='id_username'>유저명</label>
+          <input type='text' name='username' id='id_username' value={username} onChange={handelUsernameChange} required/>
+        </p>
+        <p className='form-wrap'>
+          <label htmlFor='id_address'>주소</label>
+          <input type='text' name='address' id='id_address' value={address} required readOnly placeholder='동까지만 입력됩니다.'/>
+          <button type='button' className='button' onClick={handleDaumPostcode}>주소찾기</button>
+          <button type='button' className='button' onClick={getCurrentAddress}>현재 위치로 지정</button>
+        </p>
+        <p className='form-wrap'>
+          <button className='button' type='submit'>정보 수정</button>
+        </p>
       </form>
     </article>
   )

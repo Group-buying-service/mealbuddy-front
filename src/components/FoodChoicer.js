@@ -1,5 +1,9 @@
 import React, { useContext, useState } from "react";
+
+// context
 import AuthContext from "./context/auth/AuthContext";
+
+// API
 import { APIcall } from "../utils/api";
 
 const FoodChoicer = () => {
@@ -14,18 +18,18 @@ const FoodChoicer = () => {
   }
 
   return (
-    <aside>
-      {mode === 'OPEN' ? (
+    <aside className={`foodchoicer ${mode}`}>
+      {mode === 'OPEN' && isLoggedIn ? (
         <>
-          <textarea name="food-chat" id="food-chat" cols="50" rows="20" value={message} readOnly></textarea>
-          <button id="food-choicer" onClick={getFoodChoice}>음식 추천 받기</button>
-          <button id="food-choicer-open" onClick={() => {setMode('CLOSE')}}>닫기</button>
+          <textarea name="food-chat" id="food-chat" value={message} readOnly></textarea>
+          <div className="button-wrap">
+            <button id="food-choicer" onClick={getFoodChoice} placeholder="위치정보와 날씨를 바탕으로 식사 메뉴를 추천해드립니다!">음식 추천 받기</button>
+            <button id="food-choicer-open" onClick={() => {setMode('CLOSE')}}>닫기</button>
+          </div>
         </>
       ):
       (
-        <>
-          <button id="food-choicer-open" onClick={() => {setMode('OPEN')}}>열기</button>
-        </>
+        <button id="food-choicer-open" onClick={() => {setMode('OPEN')}}></button>
       )}
     </aside>
   )

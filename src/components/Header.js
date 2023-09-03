@@ -1,11 +1,41 @@
+// react
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-import '../assets/css/common.css';
+
+// context
 import AuthContext from "./context/auth/AuthContext";
+
+// API
 import { APILogin, APIcall } from "../utils/api";
 
-const Weather = ({user}) => {
+// assets
+import '../assets/css/header.css'
+import logo from '../assets/images/logo.png'
+
+const Weather = ({ user, infoState, setWeather }) => {
   const [ weatherData, setWeatherData ] = useState('');
+
+  const weatherList = {
+    '비': 'rainy',
+    '비/눈': 'rainy',
+    '눈': 'snow',
+    '소나기': 'rainy',
+    '맑음': 'sunny',
+    '구름많음': 'partlycloud',
+    '흐림': 'cloud',
+  }
+
+  const setWeatherProps = (data) => {
+    if (weatherList[data.강수형태]) {
+      setWeather(weatherList[data.강수형태])
+    }
+    else if (weatherList[data.날씨]) {
+      setWeather(weatherList[data.날씨])
+    }
+    else {
+      setWeather('sunny')
+    }
+  }
   
   useEffect(() => {
     setWeatherData('')
@@ -13,25 +43,33 @@ const Weather = ({user}) => {
       const response = await APIcall('get', `/openAPI/weather/?lat=${lat}&lon=${lon}`);
       if (response.status === 'good') {
         setWeatherData(response.data);
+        setWeatherProps(response.data)
       }
     }
-    if (user){
-      fetchWeatherData(user.lat, user.lon);
-    }
+    fetchWeatherData(user.lat, user.lon);
   }, [user])
   
   return (
-    <ul>
-      {weatherData && Object.entries(weatherData).map(([key, value]) => {
-        return (<li key={key}>{key} : {value}</li>)
-      })}
-    </ul>
+    <>
+      { infoState ==='OPEN' && (
+        <div className="info-wrap">
+          <div className="location">{user.address}</div>
+          <ul className="weather-wrap">
+            {weatherData && Object.entries(weatherData).map(([key, value]) => {
+              return (<li key={key}>{key} : {value}</li>)
+            })}
+          </ul>
+        </div>
+        )
+      }
+    </>
   )
 }
 
-
 const Header = () => {
     const { login, logout, user, isLoggedIn } = useContext(AuthContext);
+    const [ infoState, setInfoState ] = useState('CLOSE');
+    const [ weather, setWeather ] = useState('sunny');
     const navigate = useNavigate();
 
     useEffect(()=>{
@@ -57,17 +95,21 @@ const Header = () => {
       navigate('/')
     }
 
+    const toggleInfo = () => {
+      setInfoState(infoState === 'CLOSE' ? 'OPEN' : 'CLOSE')
+    }
+
     return (
       <header className="header">    
-        <h1><Link to="/post/">밀버디</Link></h1>
-        <Weather user={user}/>
+        <h1><Link to="/post/"><img src={logo} alt="밀 버디"></img></Link></h1>
         { isLoggedIn ? (
           <>
-            <div className="location">지역 : {user.address}</div>
             <div className="header-click">
-              <Link to='/user/update/'>환영합니다 {user.username}  님.</Link>
+              <Link to='/user/update/'>환영합니다 {user.username}  님</Link>
+              <button type="button" className={`toggle-info ${weather}`} onClick={toggleInfo}>▼</button>
               <button type="button" onClick={submitLogout}>로그아웃</button>
             </div>
+            <Weather user={user} infoState={infoState} setWeather={setWeather}/>
           </>
         ) : (
           <>

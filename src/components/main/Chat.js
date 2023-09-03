@@ -1,7 +1,12 @@
+// assets
+import '../../assets/css/chat.css'
+// react
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { APIcall } from "../../utils/api";
+// context
 import AuthContext from "../context/auth/AuthContext";
+// API
+import { APIcall } from "../../utils/api";
 
 const ChatUser = ({ chat_id, listedUser, owner, user }) => {
 
@@ -33,10 +38,10 @@ const ChatUser = ({ chat_id, listedUser, owner, user }) => {
       {user.id === owner.id && listedUser.id !== user.id ?
         (<form method="post" onSubmit={banUser}>
           <input type="hidden" value={listedUser.id} name="target_user_id"/>
-          <button type="submit">강퇴</button>
+          <button type="submit" className='ban-button'></button>
         </form>)
         :
-        (user.id !== owner.id && listedUser.id === user.id && (<button type="button" onClick={exitChat}>나가기</button>))
+        (user.id !== owner.id && listedUser.id === user.id && (<button className='exit-button' type="button" onClick={exitChat}></button>))
       }
     </li>
   )
@@ -50,25 +55,26 @@ const Chat = () => {
   const [ chatSocket, setChatSocket ] = useState('');
   const { user } = useContext(AuthContext);
 
-  const chatWindowRef = useRef(null);
+  const chatScreenRef = useRef(null);
   const navigate = useNavigate();
-
-  const scrollToBottom = () => {
-    if (chatWindowRef.current) {
-      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
-    }
-  }
 
   const connectWS = async () => {
     const token = localStorage.getItem('token');
     const chatSocket = new WebSocket(
-      'ws://'
-      + '127.0.0.1:8000'
+      'ws://13.209.142.169:80'
       + '/ws/chat/'
       + chat_id
       + '/'
       + `?token=${token}`
       );
+    // const chatSocket = new WebSocket(
+    //   'ws://'
+    //   + '127.0.0.1:8000'
+    //   + '/ws/chat/'
+    //   + chat_id
+    //   + '/'
+    //   + `?token=${token}`
+    //   );
     setChatSocket(chatSocket)
 
     chatSocket.onmessage = async function(e) {
@@ -188,45 +194,53 @@ const Chat = () => {
     }
   }, [chat_id, user])
 
+  const scrollToBottom = () => {
+    if (chatScreenRef.current) {
+      chatScreenRef.current.scrollTop = chatScreenRef.current.scrollHeight;
+    }
+  }
 
   useEffect(scrollToBottom, [chatData])
 
-  const chatWindowStyle = {
-    height: '50vh',
-    overflow: 'auto'
-  }
 
   return (
     <article className="chat-page">
       <div className='title-wrap'>
         <h2>{chatData.title} - {chatData.join_number}/{chatData.target_number}</h2>
       </div>
-      <ul className="user-list">
-        {userList && 
-          userList.map((item, index) => {
-            // console.log(item)
-            return <ChatUser key={index} chat_id={chat_id} listedUser={item.user} owner={chatData.writer} getUserList={getUserList} setUserList={setUserList} user={user}/>
-          })}
-      </ul>
-      
-      <div className="chat-window" ref={chatWindowRef} style={chatWindowStyle}>
-        {chatData && 
-          (chatData.messages.map((message, index) => {
-            return (<div key={index} className='user-chat'>
-              {/* <img src={`${BASE_URL}${chat.writer_profile_image}`} alt="user-icon"/> */}
-              {message.user ? (
-                <pre className="chat-content">{message.user.username} : {message.message}</pre>
-              ) : (
-                <pre className='chat-content'>{message.message}</pre>
-              )}
-            </div>)
-          }))
-        }
+      <div className='chat-container'>
+        <div className='chat-wrap'>
+          <div className="chat-screen" ref={chatScreenRef}>
+            {chatData && 
+              (chatData.messages.map((message, index) => {
+                return message.user && message.user.id === user.id ? 
+                (<div key={index} className='my-chat'>
+                    <pre className="chat-content">{message.message}</pre>
+                </div>)
+                :
+                (<div key={index} className='other-chat'>
+                  {message.user ? (
+                    <pre className="chat-content">{message.user.username} : {message.message}</pre>
+                  ) : (
+                    <pre className='chat-content'>{message.message}</pre>
+                  )}
+                </div>)
+              }))
+            }
+          </div>
+          <form method="post" className="chat-form" onSubmit={(e) => e.preventDefault()}>
+            <textarea id="id_message" name="message" onKeyDown={(e) => enterEvent(e, e.target.form)}></textarea>
+            <button type="button"  className='send-button' onClick={(e) => submitChat(e, e.target.form)}></button>
+          </form>
+        </div>
+        <ul className="user-list">
+          {userList && 
+            userList.map((item, index) => {
+              // console.log(item)
+              return <ChatUser key={index} chat_id={chat_id} listedUser={item.user} owner={chatData.writer} getUserList={getUserList} setUserList={setUserList} user={user}/>
+            })}
+        </ul>
       </div>
-      <form method="post" className="chat-form" onSubmit={(e) => e.preventDefault()}>
-        <textarea id="id_message" name="message" onKeyDown={(e) => enterEvent(e, e.target.form)}></textarea>
-        <button type="button" onClick={(e) => submitChat(e, e.target.form)}>메세지보내기</button>
-      </form>
     </article>
   )
 }

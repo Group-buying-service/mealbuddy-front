@@ -1,0 +1,44 @@
+.foodchoicer {
+    position: fixed;
+    bottom: 5rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--point-color);
+    background-color: var(--main-color);
+    border-radius: 1rem 1rem 0 0;
+}
+
+.foodchoicer textarea {
+    border-radius: 0.9rem 0.9rem 0 0;
+    padding: 1rem;
+    width: 30vw;
+    height: 50vh;
+    box-sizing: border-box;
+}
+
+.foodchoicer .button-wrap {
+    display: flex;
+    flex-direction: row;
+}
+
+.foodchoicer button {
+    border: 1px solid var(--border-color);
+    height: 2rem;
+    flex-grow: 1;
+    box-sizing: border-box;
+}
+
+.foodchoicer.CLOSE {
+    height: 3.2rem;
+    width: 3.2rem;
+    border-radius: 100%;
+    border: none;
+}
+
+.foodchoicer.CLOSE button {
+    border: none;
+    border-radius: 100%;
+    background: var(--red-color) url('../icons/icon-foodchoicer.svg') no-repeat 50% 50% / 2.2rem;
+}
+

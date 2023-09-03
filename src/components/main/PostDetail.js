@@ -1,16 +1,20 @@
+//assets
+import '../../assets/css/detail.css'
+
 // react
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+
+// context
+import AuthContext from "../context/auth/AuthContext";
 
 // utils
 import { APIcall } from "../../utils/api";
 import { dateFormat } from "../../utils/util";
-import AuthContext from "../context/auth/AuthContext";
 
-// context
 
 const PostDetail = () => {
-  const { post_id } = useParams();
+  const { postId } = useParams();
   const [ post, setPost ] = useState([]);
   const [ mode, setMode ] = useState('');
   const { user, isLoggedIn } = useContext(AuthContext)
@@ -18,7 +22,7 @@ const PostDetail = () => {
 
   useEffect(() => {
     const fetchData = async () => {;
-      const response = await APIcall('get', `/post/detail/${post_id}/`);
+      const response = await APIcall('get', `/post/detail/${postId}/`);
       if (response.status === 'good'){
         setPost(response.data)
         setMode('RENDER')
@@ -28,7 +32,7 @@ const PostDetail = () => {
       }
     }
     fetchData()
-  }, [post_id, isLoggedIn, navigate])
+  }, [postId, isLoggedIn, navigate])
 
   const getChatPermission = async () => {
     const response = await APIcall('post', `/chat/${post.chat_id}/`)
@@ -45,7 +49,7 @@ const PostDetail = () => {
   }
 
   const postDelete = async () => {
-    const response = await APIcall('post', `/post/detail/${post_id}/delete/`)
+    const response = await APIcall('post', `/post/detail/${postId}/delete/`)
     if (response.status === 'good') {
       navigate(`/post/`);
     }
@@ -58,7 +62,7 @@ const PostDetail = () => {
     const data = {
       is_compelete : true,
     }
-    const response = await APIcall('post', `/post/detail/${post_id}/edit/`, data)
+    const response = await APIcall('post', `/post/detail/${postId}/edit/`, data)
     if (response.status === 'good') {
       setPost(response.data)
     }
@@ -72,7 +76,7 @@ const PostDetail = () => {
     const data = {
       is_compelete : false,
     }
-    const response = await APIcall('post', `/post/detail/${post_id}/edit/`, data)
+    const response = await APIcall('post', `/post/detail/${postId}/edit/`, data)
     if (response.status === 'good') {
       setPost(response.data)
     }
@@ -84,37 +88,55 @@ const PostDetail = () => {
   }
 
   return (
-    <article className="post-page">
+    <article className="detail-page">
       {mode === 'RENDER' && (
       <>
         <div className="title-wrap">
           <h2>{post.title}</h2>
-        </div>
           {isLoggedIn && user.id === post.writer.id && (
             <div className="post-button-wrap">
-              <button type="button" onClick={postDelete}>게시글 삭제</button>
+              <button type="button" className='button delete-button' onClick={postDelete}></button>
+              <Link to={`/post/${postId}/edit/`} className='button modify-button'></Link>
               {post.is_compelete ? 
-                (<button type="button" onClick={startJoin}>모집 하기</button>)
+                (<button type="button" className='button' onClick={startJoin}>모집 하기</button>)
                 :
-                (<button type="button" onClick={endJoin}>모집 완료</button>)
+                (<button type="button" className='button' onClick={endJoin}>모집 끝내기</button>)
               }
             </div>
           )}
-        <div className="post-wrap">
-          <p>{post.category}</p>
+        </div>
+        <div className="author-wrap">
           <p>{post.writer.username}</p>
           <p>{dateFormat(post.created_at)}</p>
+          <p>|</p>
+          <p className='category-wrap '>{post.category}</p>
+          <p>|</p>
+          <p>{post.is_compelete ? '모집 완료' : '모집 중'}</p>
+          <p>|</p>
           <p>{post.join_number}/{post.target_number}</p>
-          <p>{post.is_compelete ? 'O' : 'X'}</p>
-          {!post.is_compelete && post.is_joined ? 
-            (
-              <button type="button" onClick={joinChat}>참여하기</button>
-            )
-            : 
-            (
-              post.join_number < post.target_number && (<button type="button" onClick={getChatPermission}>참여하기</button>)
-            )
-          }
+            {post.is_joined ? 
+              (
+                <>
+                  <p>|</p>
+                  <button type="button" className='join-button' onClick={joinChat}>참여하기</button>
+                </>
+              )
+              : 
+              (
+                !post.is_compelete && post.join_number < post.target_number && (
+                  <>
+                    <p>|</p>
+                    <button type="button" className='join-button' onClick={getChatPermission}>참여하기</button>
+                  </>
+                )
+              )
+            }
+        </div>
+        <div className="post-wrap">
+          <p>{post.content}</p>
+          <div className='post-status'>
+            
+          </div>
         </div>
       </>
       )

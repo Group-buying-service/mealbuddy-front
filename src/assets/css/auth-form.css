@@ -1,0 +1,27 @@
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.auth-form .form-wrap {
+    display: flex;
+}
+
+.auth-form .form-wrap label {
+    width: 9rem;
+    display: flex;
+    align-items: center;
+}
+
+.auth-form .form-wrap .button {
+    color: white;
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+}
+
+.auth-form .form-wrap .button:nth-child(3) {
+    margin-left: 1rem;
+}

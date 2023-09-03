@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const BASE_URL = 'http://127.0.0.1:8000/api'
+export const BASE_URL = process.env.REACT_APP_BASE_API_URL
+export const BASE_WS_URL = process.env.REACT_APP_BASE_WS_URL
 const KAKAO_API_KEY = process.env.REACT_APP_KAKAO_API_KEY
 
 const API = axios.create({

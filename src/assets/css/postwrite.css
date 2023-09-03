@@ -1,0 +1,28 @@
+.write-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.write-form .form-wrap {
+    display: flex;
+}
+
+.write-form .form-wrap label {
+    width: 7rem;
+}
+
+.write-form input:last-child {
+    flex-grow: 1;
+}
+
+.write-form textarea {
+    flex-grow: 1;
+    height: 25rem;
+}
+
+.write-form .form-wrap:last-child {
+    gap: 1rem;
+    justify-content: end;
+}
