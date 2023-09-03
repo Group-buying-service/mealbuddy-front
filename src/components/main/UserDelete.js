@@ -18,7 +18,7 @@ const UserDelete = () => {
             const response = await APIcall('post', '/user/delete/', formData)
             if (response.status === 'good') {
               logout()
-              navigate(`/chat/list/`);
+              navigate(`/login/`);
               setError('')
             }
             else if (response.status === 'Unauthorized') {
@@ -44,12 +44,12 @@ const UserDelete = () => {
           {error && (
             <div className='error'>{error}</div>
           )}
-          <div className='auth-wrap'>
-            <p>
-              <label htmlFor='id_password'>비밀번호</label>
-              <input type='password' name='password' id='id_password' required/>
-            </p>
-            <input className='button gray' type='submit' value="탈퇴하기"/>
+          <div className='form-wrap'>
+            <label htmlFor='id_password'>비밀번호</label>
+            <input type='password' name='password' id='id_password' required/>
+          </div>
+          <div className='form-wrap'>
+            <input className='button' type='submit' value="탈퇴하기"/>
           </div>
         </form>
       </article>

@@ -67,7 +67,6 @@ const Register = () => {
         navigate('/post/');
       }
       else {
-        console.log(response.data.errors)
         setErrors(response.data.errors)
       }
     }
@@ -116,6 +115,14 @@ const Register = () => {
           <label htmlFor='id_password'>비밀번호</label>
           <input type='password' name='password' id='id_password' required/>
         </div>
+        {errors.password2&&(
+            <>
+            {errors.password2.map((item, index)=> {
+              return <div className='error' key={index}>{item}</div>
+            })}
+            </>
+          )
+        }
         <div className='form-wrap'>
           <label htmlFor='id_password2'>비밀번호 확인</label>
           <input type='password' name='password2' id='id_password2' required/>

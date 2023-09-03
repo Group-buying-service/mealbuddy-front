@@ -1,0 +1,17 @@
+.index-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    font-size: 1.1rem;
+}
+
+.index-button {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.index-button .button {
+    padding: 0.7rem;
+}

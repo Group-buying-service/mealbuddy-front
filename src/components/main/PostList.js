@@ -106,7 +106,7 @@ const PostList = () => {
                 <td>{post.writer.username}</td>
                 <td>{dateFormat(post.created_at)}</td>
                 <td>{post.join_number}/{post.target_number}</td>
-                <td>{post.is_complete ? '모집 완료' : '모집 중'}</td>
+                <td>{post.is_compelete ? '모집 완료' : '모집 중'}</td>
               </tr>
             ))}
           </tbody>

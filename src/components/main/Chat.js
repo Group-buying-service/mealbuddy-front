@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 // context
 import AuthContext from "../context/auth/AuthContext";
 // API
-import { APIcall } from "../../utils/api";
+import { APIcall, BASE_WS_URL } from "../../utils/api";
 
 const ChatUser = ({ chat_id, listedUser, owner, user }) => {
 
@@ -61,7 +61,7 @@ const Chat = () => {
   const connectWS = async () => {
     const token = localStorage.getItem('token');
     const chatSocket = new WebSocket(
-      'ws://13.209.142.169:80'
+      BASE_WS_URL
       + '/ws/chat/'
       + chat_id
       + '/'
