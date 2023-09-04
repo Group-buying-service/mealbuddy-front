@@ -47,6 +47,16 @@ const PostList = () => {
     }
   }
 
+  const onPrevNextPageButton = async (e) => {
+    e.preventDefault()
+    const target_page = parseInt(e.target.getAttribute('href').split('=')[1])
+    const response = await APIcall('get', `/post/?category=${category}&page=${target_page}`);
+    if (response.status === 'good') {
+      setPostList(response.data.posts);
+      setPaginator(response.data.paginator);
+    }
+}
+
   const changePage = async (e) => {
     e.preventDefault();
     const target_page = e.target.innerText;
@@ -118,7 +128,7 @@ const PostList = () => {
       <div className="board-bottom">
         {paginator && (
           <ul className='pagination'>
-          {paginator.prev_button && <li><a href={`/chat/list/?page=${paginator.prev_button}`} className='page button  pn-button'>PREV</a></li>}
+          {paginator.prev_button && <li><a href={`/post/?page=${paginator.prev_button}`} onClick={onPrevNextPageButton} className='page button  pn-button'>PREV</a></li>}
           {paginator.page_range.map((item, index) => (
             <li key={index}>
             {item === paginator.current_page? (
@@ -128,7 +138,7 @@ const PostList = () => {
             )}
             </li>
           ))}
-          {paginator.next_button && <li><a href={`/chat/list/?page=${paginator.next_button}`} className='page button pn-button'>NEXT</a></li>}
+          {paginator.next_button && <li><a href={`/post/?page=${paginator.next_button}`} className='page button pn-button' onClick={onPrevNextPageButton}>NEXT</a></li>}
         </ul>
         )}
         {isLoggedIn && (
