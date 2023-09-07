@@ -6,11 +6,70 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from "./context/auth/AuthContext";
 
 // API
-import { APILogin, APIcall } from "../utils/api";
+import { APILogin, APIcall, BASE_WS_URL } from "../utils/api";
 
 // assets
 import '../assets/css/header.css'
 import logo from '../assets/images/logo.png'
+
+const Notification = ({ isLoggedIn }) => {
+
+  const [ notificationSocket, setNotificationSocket ] = useState('');
+  const [ notification, setNotification ] = useState({chat:''});
+
+  useEffect(() => {
+    console.log('noti')
+    if (isLoggedIn) {
+      connectWS();
+    }
+    }, [isLoggedIn])
+
+  const connectWS = async () => {
+    const token = localStorage.getItem('token');
+    const notificationSocket = new WebSocket(
+      BASE_WS_URL
+      + '/ws/notification/'
+      + `?token=${token}`
+      );
+
+    setNotificationSocket(notificationSocket)
+
+    notificationSocket.onmessage = async function(e) {
+      const data = JSON.parse(e.data);
+      if (data.type === "init") {
+        setNotification(data)
+        console.log(data)
+      }
+      else {
+        setNotification(prevNotification => {
+          const updatedNotification = {
+            ...prevNotification,
+            ...data
+          };
+          return updatedNotification
+        })
+      }
+    }
+  
+    notificationSocket.onclose = (e) => {
+      const code = (e.code);
+      console.error('Chat socket closed unexpectedly')
+    };
+  
+    notificationSocket.onerror = (e) => {
+      console.log(e)
+      alert("연결에 실패했습니다.")
+    }
+  }
+
+  return (
+    <ul>
+      {notification.chat && notification.chat.map((value, key) => {
+        return (<Link key={key} to={`/chat/${value[0]}`}>{value[1]}</Link>)
+      })}
+    </ul>
+  )
+}
 
 const Weather = ({ user, infoState, setWeather }) => {
   const [ weatherData, setWeatherData ] = useState('');
@@ -72,6 +131,8 @@ const Header = () => {
     const [ weather, setWeather ] = useState('sunny');
     const navigate = useNavigate();
 
+    
+
     useEffect(()=>{
       const loginCheck = async () => {
         const token = localStorage.getItem('token')
@@ -110,6 +171,7 @@ const Header = () => {
               <button type="button" onClick={submitLogout}>로그아웃</button>
             </div>
             <Weather user={user} infoState={infoState} setWeather={setWeather}/>
+            <Notification isLoggedIn={isLoggedIn}/>
           </>
         ) : (
           <>
