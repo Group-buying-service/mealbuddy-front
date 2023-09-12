@@ -6,14 +6,43 @@
     flex-direction: column;
     border: 2px solid var(--point-color);
     background-color: var(--main-color);
-    border-radius: 1rem 1rem 0 0;
+    height: 50vh;
+    width: 30vw;
+}
+.foodchoicer-window {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.foodchoicer-chat {
+    border-bottom: 1px solid var(--border-color);
+    line-height: 1.2rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.foodchoicer-chat.ai-chat {
+    background-color: var(--point-color);
+}
+
+.foodchoicer-form {
+    display: flex;
+}
+
+.foodchoicer-form button {
+    width: 3rem;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    border: 1px solid var(--border-color);
+    border-bottom: 0;
 }
 
 .foodchoicer textarea {
-    border-radius: 0.9rem 0.9rem 0 0;
     padding: 1rem;
-    width: 30vw;
-    height: 50vh;
+    flex-grow: 1;
+    height: 4rem;
     box-sizing: border-box;
 }
 
@@ -22,7 +51,7 @@
     flex-direction: row;
 }
 
-.foodchoicer button {
+.foodchoicer .button-wrap button {
     border: 1px solid var(--border-color);
     height: 2rem;
     flex-grow: 1;
@@ -37,6 +66,8 @@
 }
 
 .foodchoicer.CLOSE button {
+    width: 100%;
+    height: 100%;
     border: none;
     border-radius: 100%;
     background: var(--red-color) url('../icons/icon-foodchoicer.svg') no-repeat 50% 50% / 2.2rem;
